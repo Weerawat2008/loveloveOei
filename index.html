@@ -2,241 +2,247 @@
 <html lang="th">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>วงล้อรัก 💗</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>วงล้อรัก — สุขสันต์วันครบรอบ 💕</title>
   <style>
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #ffe6f2, #ffcce6);
-      font-family: 'Prompt', sans-serif;
-      overflow-y: auto;
-      overflow-x: hidden;
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    :root{--bg1:#fff0f6;--bg2:#fff7fb;--card:#ffffffcc;--accent:#ff7ab6;--muted:#7d6a7d}
+    html,body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial}
+    body{background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#2b1f2b;display:flex;align-items:center;justify-content:center;padding:20px;min-height:100vh;overflow:auto;scroll-behavior:smooth}
+    .app{width:1100px;max-width:100%;display:grid;grid-template-columns:380px 1fr;gap:20px}
+    .panel{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(120,70,100,0.08)}
+    h2{margin:0 0 10px 0;font-size:18px;color:#3b233b}
+    .muted{color:var(--muted);font-size:13px}
+
+    .items{display:flex;flex-direction:column;gap:10px;max-height:440px;overflow:auto;padding-right:6px}
+    .item{display:flex;gap:8px;align-items:center}
+    .item input[type=text]{flex:1;padding:8px;border-radius:10px;border:1px solid rgba(120,70,100,0.06);background:transparent;color:inherit}
+    .item input[type=color]{width:44px;height:36px;border-radius:10px;border:0;padding:0}
+    button{background:var(--accent);border:0;color:white;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px}
+
+    .stage{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+    .wheel-wrap{position:relative}
+    canvas{background:transparent;border-radius:12px;touch-action:none;display:block}
+    .pointer{position:absolute;left:50%;transform:translateX(-50%);top:-14px;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:26px solid #fff1f6;filter:drop-shadow(0 6px 12px rgba(150,70,120,0.12))}
+    .result{margin-top:8px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#fff6fb,#fff8f9);min-height:44px;display:flex;align-items:center;gap:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+
+    /* 💗 hearts emoji animation */
+    .hearts{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;overflow:hidden;font-size:22px;z-index:0}
+    .hearts span{position:absolute;animation:floatUp 6s linear infinite;opacity:0.8}
+    @keyframes floatUp{
+      0%{transform:translateY(100vh) scale(0.6);opacity:0}
+      10%{opacity:1}
+      100%{transform:translateY(-20vh) scale(1.1);opacity:0}
     }
 
-    h1 {
-      color: #ff66a3;
-      text-shadow: 0 0 10px white;
-    }
+    /* overlay intro */
+    .overlay{position:fixed;left:0;right:0;top:0;bottom:0;background:linear-gradient(180deg,rgba(255,245,250,0.95),rgba(255,249,251,0.92));display:flex;align-items:center;justify-content:center;z-index:40}
+    .intro{max-width:760px;width:94%;background:linear-gradient(180deg,#ffffff,#fff7fb);border-radius:16px;padding:26px;box-shadow:0 20px 60px rgba(120,60,100,0.12);text-align:center}
+    .intro h1{margin:0;font-size:28px;color:#5a2f56}
+    .intro p{margin:10px 0 18px 0;color:#6b4a6b}
+    .start-btn{background:#ff6fa8;color:white;padding:12px 20px;border-radius:12px;font-size:16px;border:0;cursor:pointer}
 
-    .wheel-container {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      margin: 30px auto;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      animation: idleSpin 20s linear infinite;
-    }
-
-    @keyframes idleSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .arrow {
-      position: absolute;
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 25px solid #ffb6c1; /* ชมพูอ่อน */
-      filter: drop-shadow(0 0 5px #fff);
-    }
-
-    button {
-      background: #ff66a3;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 12px 28px;
-      font-size: 1.2em;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      background: #ff3385;
-    }
-
-    /* หัวใจลอยเป็นอีโมจิ */
-    .hearts {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .heart {
-      position: absolute;
-      font-size: 24px;
-      animation: floatUp 6s linear infinite;
-      opacity: 0.8;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(1); opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
-    }
-
-    /* popup */
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-      text-align: center;
-      font-size: 1.4em;
-      transition: transform 0.3s ease;
-      z-index: 10;
-    }
-
-    .popup.show {
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    @media (max-width: 600px) {
-      .wheel-container { width: 250px; height: 250px; }
-      h1 { font-size: 1.6em; }
-      button { font-size: 1em; padding: 10px 20px; }
-    }
+    /* responsive */
+    @media(max-width:980px){.app{grid-template-columns:1fr;padding:12px}.panel{padding:14px}}
+    @media(max-width:600px){button{width:100%}}
   </style>
 </head>
 <body>
-  <h1>สุขสันต์วันครบรอบนะที่รัก 💕</h1>
+  <div class="hearts" id="hearts"></div>
 
-  <div class="wheel-container">
-    <canvas id="wheel"></canvas>
-    <div class="arrow"></div>
+  <div class="app">
+    <div class="panel">
+      <h2>จัดการคูปอง</h2>
+      <div class="muted">แก้ไขของขวัญที่จะใส่ในวงล้อ</div>
+      <div class="items" id="items"></div>
+
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="newText" placeholder="เพิ่มรางวัลใหม่ เช่น '💋 หอม 1 ครั้ง'" style="flex:1;padding:8px;border-radius:10px;border:1px solid rgba(120,70,100,0.06)" />
+        <button id="addNew">เพิ่ม</button>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button id="shuffle">สุ่มสี</button>
+        <button id="reset">รีเซ็ต</button>
+      </div>
+    </div>
+
+    <div class="panel stage">
+      <h2 style="width:100%;text-align:center">วงล้อสุ่มของขวัญ</h2>
+      <div class="wheel-wrap">
+        <div class="pointer" id="pointer"></div>
+        <canvas id="wheel" width="720" height="720"></canvas>
+      </div>
+
+      <button id="spin" style="margin-top:10px;">💞 หมุนวงล้อ 💞</button>
+      <div class="result" id="result">ยังไม่ได้เลือก</div>
+    </div>
   </div>
 
-  <button id="spinButton">หมุนเลย 💗</button>
+  <div class="overlay" id="intro">
+    <div class="intro">
+      <h1>สุขสันต์วันครบรอบนะเบบี๋อ้วน 💕</h1>
+      <p>พร้อมจะหมุนวงล้อหรือยังจ๊ะะ? ❤️</p>
+      <div style="margin-top:14px"><button class="start-btn" id="startBtn">เริ่มเลย</button></div>
+    </div>
+  </div>
 
-  <div class="popup" id="resultPopup"></div>
+<script>
+const defaultItems = [
+  {text:'💋 จุ้บ 1 ครั้ง', color:'#FFB6D5'},
+  {text:'🍰 พาไปกินขนม', color:'#FFD8A8'},
+  {text:'🎁 ให้เบบี๋จับพุง', color:'#CFE9B9'},
+  {text:'🎬 ดูหนังด้วยกัน', color:'#9ED9FF'},
+  {text:'🙌🏻 กอดอบอุ่น', color:'#E7C7FF'},
+  {text:'💓 ชมเบบี๋อ้วน', color:'#FFE0F0'},
+  {text:'👏🏻 นวดให้เบบี๋', color:'#FFDFE6'},
+  {text:'🚶‍♂️ เดทเล็กๆ ด้วยกัน', color:'#D8F7F2'}
+];
 
-  <div class="hearts"></div>
+let items = JSON.parse(JSON.stringify(defaultItems));
+let canvas = document.getElementById('wheel');
+let ctx = canvas.getContext('2d');
+let cw = canvas.width, ch = canvas.height, radius = cw/2 - 20;
+let center = {x:cw/2, y:ch/2};
+let rotation = 0;
+let isSpinning = false; let angularVelocity = 0; let spinAnimId = null; let easing = 0.995;
+let resultEl = document.getElementById('result');
 
-  <audio id="spinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a3db45cc3.mp3?filename=spinning-wheel-143300.mp3"></audio>
-  <audio id="winSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0c420f3081.mp3?filename=win-sound-126507.mp3"></audio>
+// ---------- draw wheel ----------
+function drawWheel(){
+  ctx.clearRect(0,0,cw,ch);
+  const n = items.length; if(n===0) return;
+  const arc = Math.PI*2 / n;
+  for(let i=0;i<n;i++){
+    const start = rotation + i*arc; const end = start + arc;
+    ctx.beginPath(); ctx.moveTo(center.x, center.y); ctx.arc(center.x, center.y, radius, start, end); ctx.closePath();
+    ctx.fillStyle = items[i].color; ctx.fill();
+    ctx.save(); ctx.translate(center.x, center.y);
+    ctx.rotate(start + arc/2);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#2b1f2b'; ctx.font = 'bold 22px sans-serif';
+    ctx.fillText(items[i].text, radius - 18, 8);
+    ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(center.x, center.y, 60, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(center.x, center.y, 38, 0, Math.PI*2); ctx.fillStyle = '#ffeef6'; ctx.fill();
+}
 
-  <script>
-    const wheel = document.getElementById('wheel');
-    const ctx = wheel.getContext('2d');
-    const spinButton = document.getElementById('spinButton');
-    const spinSound = document.getElementById('spinSound');
-    const winSound = document.getElementById('winSound');
-    const resultPopup = document.getElementById('resultPopup');
+// ---------- spin ----------
+function spinOnce(){
+  if(isSpinning) return;
+  isSpinning = true;
+  angularVelocity = (Math.random()*0.8 + 1.2);
+  playTick();
+  animate();
+}
 
-    const prizes = ["กอดแน่น ๆ 🤗", "ไปเดทกัน 💕", "เขียนจดหมายรัก 💌", "ดูหนังด้วยกัน 🍿", "ขอนอนกอด 😴", "หอมแก้มหนึ่งที 😘"];
+function animate(){
+  spinAnimId = requestAnimationFrame(animate);
+  rotation += angularVelocity * 0.02;
+  angularVelocity *= easing;
+  drawWheel();
+  if(Math.abs(angularVelocity) < 0.002){
+    cancelAnimationFrame(spinAnimId);
+    isSpinning = false; angularVelocity = 0;
+    const n = items.length; const arc = Math.PI*2 / n;
+    const pointerAngle = -Math.PI/2;
+    const normalized = ((pointerAngle - rotation) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+    let idx = Math.floor(normalized / arc);
+    idx = (idx + n) % n;
+    showResult(idx);
+  }
+}
 
-    const colors = ["#ffb6c1", "#ffd1dc", "#ffe6f2", "#ff99cc", "#ffcce6", "#ff80bf"];
-    const size = prizes.length;
-    const radius = 150;
+function showResult(idx){
+  const it = items[idx];
+  resultEl.innerHTML = `🎉 ได้: <strong>${it.text}</strong>`;
+  const prev = it.color;
+  it.color = '#fff8a8';
+  drawWheel();
+  setTimeout(()=>{it.color=prev;drawWheel();},1200);
+}
 
-    // วาดวงล้อ
-    function drawWheel() {
-      for (let i = 0; i < size; i++) {
-        const angle = (i / size) * 2 * Math.PI;
-        ctx.beginPath();
-        ctx.moveTo(150, 150);
-        ctx.arc(150, 150, radius, angle, angle + 2 * Math.PI / size);
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.fill();
-        ctx.save();
-        ctx.translate(150, 150);
-        ctx.rotate(angle + Math.PI / size);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#ff1a75";
-        ctx.font = "16px Prompt";
-        ctx.fillText(prizes[i], 130, 10);
-        ctx.restore();
-      }
-    }
+// ---------- slow idle spin ----------
+setInterval(()=>{ if(!isSpinning){ rotation += 0.002; drawWheel(); } }, 30);
 
-    drawWheel();
+// ---------- hearts 💗 ----------
+function spawnHearts(){
+  const container = document.getElementById('hearts');
+  for(let i=0;i<8;i++){
+    const span = document.createElement('span');
+    span.textContent = '💗';
+    span.style.left = (Math.random()*100)+'%';
+    span.style.fontSize = (18+Math.random()*18)+'px';
+    span.style.animationDelay = (Math.random()*5)+'s';
+    container.appendChild(span);
+    setTimeout(()=>span.remove(), 6000);
+  }
+}
+setInterval(spawnHearts, 3000);
+spawnHearts();
 
-    let isSpinning = false;
-    let rotation = 0;
+// ---------- tick sound ----------
+function playTick(){
+  const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  const tick = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  tick.frequency.value = 1200;
+  gain.gain.value = 0.0001;
+  tick.connect(gain); gain.connect(audioCtx.destination);
+  tick.start();
+  gain.gain.linearRampToValueAtTime(0.1,audioCtx.currentTime+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.2);
+  tick.stop(audioCtx.currentTime+0.25);
+}
 
-    spinButton.addEventListener('click', () => {
-      if (isSpinning) return;
-      isSpinning = true;
+// ---------- UI ----------
+function renderItemsUI(){
+  const container = document.getElementById('items');
+  container.innerHTML = '';
+  items.forEach((it,i)=>{
+    const div=document.createElement('div');
+    div.className='item';
+    const inp=document.createElement('input');
+    inp.value=it.text;
+    inp.addEventListener('input',e=>{items[i].text=e.target.value;drawWheel();});
+    const color=document.createElement('input');
+    color.type='color';color.value=it.color;
+    color.addEventListener('input',e=>{items[i].color=e.target.value;drawWheel();});
+    const del=document.createElement('button');del.textContent='ลบ';
+    del.style.background='#ff9aa2';
+    del.addEventListener('click',()=>{items.splice(i,1);renderItemsUI();drawWheel();});
+    div.append(inp,color,del);
+    container.append(div);
+  });
+}
 
-      spinSound.play();
+document.getElementById('addNew').addEventListener('click',()=>{
+  const v=document.getElementById('newText').value.trim();
+  if(!v)return;
+  items.push({text:v,color:'#FFD8A8'});
+  document.getElementById('newText').value='';
+  renderItemsUI();drawWheel();
+});
+document.getElementById('shuffle').addEventListener('click',()=>{
+  items.forEach(it=>it.color=`hsl(${Math.random()*360},70%,80%)`);
+  renderItemsUI();drawWheel();
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  items=JSON.parse(JSON.stringify(defaultItems));
+  renderItemsUI();drawWheel();
+});
+document.getElementById('spin').addEventListener('click',()=>spinOnce());
 
-      const spin = Math.random() * 360 + 3600; // หมุนสุ่ม + รอบเพิ่ม
-      const duration = 6000;
+// ---------- intro ----------
+const intro=document.getElementById('intro');
+document.getElementById('startBtn').addEventListener('click',()=>{
+  intro.style.display='none';
+});
 
-      const start = performance.now();
-      const initialRotation = rotation;
-
-      function animate(time) {
-        const elapsed = time - start;
-        const progress = Math.min(elapsed / duration, 1);
-        rotation = initialRotation + spin * easeOut(progress);
-        wheel.style.transform = `rotate(${rotation}deg)`;
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          isSpinning = false;
-          const prizeIndex = Math.floor(((360 - (rotation % 360)) / (360 / size)) % size);
-          const result = prizes[prizeIndex];
-          showPopup(result);
-          winSound.play();
-        }
-      }
-      requestAnimationFrame(animate);
-    });
-
-    function easeOut(t) {
-      return 1 - Math.pow(1 - t, 3);
-    }
-
-    // popup
-    function showPopup(text) {
-      resultPopup.textContent = `คุณได้: ${text}`;
-      resultPopup.classList.add('show');
-      setTimeout(() => resultPopup.classList.remove('show'), 3500);
-    }
-
-    // หัวใจลอย
-    function createHearts() {
-      const container = document.querySelector('.hearts');
-      setInterval(() => {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.textContent = '💗';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = 4 + Math.random() * 4 + 's';
-        container.appendChild(heart);
-        setTimeout(() => heart.remove(), 7000);
-      }, 400);
-    }
-    createHearts();
-  </script>
+function init(){
+  renderItemsUI();
+  drawWheel();
+}
+init();
+</script>
 </body>
 </html>
